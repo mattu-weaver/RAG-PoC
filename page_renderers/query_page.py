@@ -43,9 +43,27 @@ class QueryPage(StreamlitPage):
         query = st.text_input("Enter your query:")
         llm_model = st.sidebar.text_input("OpenAI Model", "gpt-3.5-turbo")
         st.sidebar.divider()
-        k = st.sidebar.slider("Number of faiss results to retrieve", min_value=1, max_value=10, value=3)
+        k = st.sidebar.slider("Number of faiss results to retrieve", 
+                               min_value=1, max_value=10, value=3)
+
         temperature = st.sidebar.slider("Temperature", 0.0, 2.0, 0.4)
-        max_tokens = st.sidebar.slider("Max Tokens:", 100, 1000, 200)
+        max_tokens = st.sidebar.slider("Max Tokens", 100, 1000, 200)
+        
+        # Add system prompt editor in sidebar
+        st.sidebar.divider()
+        with st.sidebar.expander("System Prompt", expanded=False):
+            default_system_prompt = cfg_["RAG"]["system_prompt"]
+            system_prompt = st.text_area(
+                "Edit the system prompt:",
+                value=default_system_prompt,
+                height=200,
+                key="system_prompt_editor"
+            )
+            
+            # Add a reset button to restore the default prompt
+            if st.button("Reset to Default"):
+                st.session_state.system_prompt_editor = default_system_prompt
+                system_prompt = default_system_prompt
 
         if st.button("Search") and query:
             try:
@@ -66,13 +84,17 @@ class QueryPage(StreamlitPage):
                     f"temp: {temperature}, and max_tokens: {max_tokens}"
                 )
 
+                # Use the edited system prompt
+                custom_cfg = cfg_.copy()
+                custom_cfg["RAG"]["system_prompt"] = system_prompt
+                
                 response_llm = LLMResponse(
                     query,
                     [doc.page_content for doc in results],
                     model_name=llm_model,
                     temperature=temperature,
                     max_tokens=max_tokens,
-                    cfg=cfg_,
+                    cfg=custom_cfg,
                 )
 
                 final_answer = response_llm.generate_answer()
