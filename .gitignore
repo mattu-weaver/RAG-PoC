@@ -64,3 +64,4 @@ wandb/
 *.json
 *.xlsx
 *.parquet
+database/faiss_db/documents.npy

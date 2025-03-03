@@ -8,7 +8,6 @@ import streamlit as st
 from loguru import logger
 from sentence_transformers import SentenceTransformer
 from utils.chunk_retrieval import ChunkRetrieval
-from utils.response import generate_answer
 from utils.response import LLMResponse
 from .base_page import StreamlitPage
 
@@ -42,10 +41,11 @@ class QueryPage(StreamlitPage):
 
         # Search interface
         query = st.text_input("Enter your query:")
-        k = st.sidebar.slider("Number of results:", min_value=1, max_value=10, value=3)
         llm_model = st.sidebar.text_input("OpenAI Model", "gpt-3.5-turbo")
+        st.sidebar.divider()
+        k = st.sidebar.slider("Number of faiss results to retrieve", min_value=1, max_value=10, value=3)
         temperature = st.sidebar.slider("Temperature", 0.0, 2.0, 0.4)
-        max_tokens = st.sidebar.slider("Max Tokens", 100, 1000, 200)
+        max_tokens = st.sidebar.slider("Max Tokens:", 100, 1000, 200)
 
         if st.button("Search") and query:
             try:
@@ -82,5 +82,5 @@ class QueryPage(StreamlitPage):
 
             except Exception as e:  # pylint: disable=broad-exception-caught
                 st.error(f"Error while creating an LLM response: {str(e)}")
-                logger.error(f"Error while creating an LLM response: {str(e)}")
+                logger.error(f"Error during search: {str(e)}")
 
