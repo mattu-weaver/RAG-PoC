@@ -1,0 +1,29 @@
+[logger]
+# Logging levels for loguru
+# TRACE (most verbose)
+# DEBUG
+# INFO
+# SUCCESS
+# WARNING
+# ERROR
+# CRITICAL (most severe)
+level = 'INFO'
+format = '{time:YYYY MM DD HH:MM:SS} | {level} | {module} | {function} | Line {line} | {message}'
+log_name = 'app_log'
+
+[databases]
+db_folder = 'database/faiss_db'
+faiss_db_index='index.faiss'
+docs = 'documents.npy'
+
+[pdf-details]
+pdf_folder = '/Users/matthewweaver/Review'
+chunk_display_count = 2
+embed_file_pattern = '*.pdf'
+default_folder = '/Users/matthewweaver/Review'
+
+[pages]
+embedding_model_readonly = true
+show_extracted_pdf_chunks = true
+embedding_model = 'all-MiniLM-L6-v2'
+response_model = 'gpt-3.5-turbo'
