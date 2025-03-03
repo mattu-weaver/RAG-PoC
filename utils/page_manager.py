@@ -5,7 +5,9 @@ from page_renderers import StreamlitPage
 
 
 class PageManager:
-    """Manages the available pages and their display."""
+    """
+    Manages the available pages and their display.
+    """
 
     def __init__(self, page_dict: Dict[str, Type[StreamlitPage]], cfg_: Dict[str, any]):
         self.pages = page_dict

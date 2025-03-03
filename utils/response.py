@@ -4,7 +4,11 @@ from openai import OpenAI # pylint: disable=import-error
 import streamlit as st
 
 
-class LLMResponse:
+class LLMResponse: # pylint: disable=too-many-arguments
+    """
+    Passes a query and associated data chunks to an LLM to generate a coherent response.
+    """
+    
     def __init__(self,
     query: str,
     chunks: List[str],
@@ -34,8 +38,11 @@ class LLMResponse:
         client = OpenAI(api_key=st.secrets["openai_api_key"])
         combined_context = "\n".join(self.chunks)
         prompt_text = f"Context:\n{combined_context}\n\nQuery:\n{self.query}\n\nAnswer:"
+
+        system_message = self.cfg["RAG"]["system_prompt"]
+
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": system_message},
             {"role": "user", "content": prompt_text}
                 ]
         try:
